@@ -162,7 +162,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         try {
             list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note) = $this->getCommonRequestParams();
             $employee = $this->getEmployeeService()->getEmployeeDao()->getEmployeeByEmpNumber($empNumber);
-            if (is_null($employee->getPurgedAt())) {
+            if (!is_null($employee->getPurgedAt())) {
                 throw $this->getForbiddenException();
             }
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
@@ -385,7 +385,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     private function isAuthUserAllowedToPerformDeleteActions(int $attendanceRecordOwnedEmpNumber): bool
     {
         $employee = $this->getEmployeeService()->getEmployeeDao()->getEmployeeByEmpNumber($attendanceRecordOwnedEmpNumber);
-        if (is_null($employee->getPurgedAt())) {
+        if (!is_null($employee->getPurgedAt())) {
             return false;
         }
         $loggedInUserEmpNumber = $this->getAuthUser()->getEmpNumber();
@@ -455,7 +455,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         try {
             list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note) = $this->getCommonRequestParams();
             $employee = $this->getEmployeeService()->getEmployeeDao()->getEmployeeByEmpNumber($empNumber);
-            if (is_null($employee->getPurgedAt())) {
+            if (!is_null($employee->getPurgedAt())) {
                 throw $this->getForbiddenException();
             }
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
