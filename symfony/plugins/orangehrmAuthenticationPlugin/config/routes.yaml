@@ -1,0 +1,19 @@
+auth_login:
+  path: /auth/login
+  controller: OrangeHRM\Authentication\Controller\LoginController::handle
+  methods: [ GET ]
+
+auth_validate:
+  path: /auth/validate
+  controller: OrangeHRM\Authentication\Controller\ValidateController::handle
+  methods: [ POST ]
+
+auth_logout:
+  path: /auth/logout
+  controller: OrangeHRM\Authentication\Controller\LogoutController::handle
+  methods: [ GET ]
+
+auth_admin_access_verify:
+  path: /auth/adminVerify
+  controller: OrangeHRM\Authentication\Controller\AdministratorVerifyController::handle
+  methods: [ POST ]

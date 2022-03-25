@@ -18,6 +18,8 @@
  * Boston, MA  02110-1301, USA
  */
 
+use OrangeHRM\Attendance\Dao\AttendanceDao;
+
 /**
  *  @group Attendance
  */
@@ -79,7 +81,7 @@ class AttendanceDaoTest extends PHPUnit_Framework_TestCase {
         $employeeId = 2;
         $actionableStatesList = array(PluginAttendanceRecord::STATE_PUNCHED_IN);
 
-        $attendanceRecord = $this->attendanceDao->getLastPunchRecord($employeeId, $actionableStatesList);
+        $attendanceRecord = $this->attendanceDao->getLastPunchRecordByEmployeeNumberAndActionableList($employeeId, $actionableStatesList);
 
         $this->assertEquals($attendanceRecord->getId(), 2);
         $this->assertEquals($attendanceRecord->getEmployeeId(), $employeeId);
@@ -94,7 +96,7 @@ class AttendanceDaoTest extends PHPUnit_Framework_TestCase {
         $employeeId = 4;
         $actionableStatesList = array(PluginAttendanceRecord::STATE_PUNCHED_IN);
 
-        $attendanceRecord = $this->attendanceDao->getLastPunchRecord($employeeId, $actionableStatesList);
+        $attendanceRecord = $this->attendanceDao->getLastPunchRecordByEmployeeNumberAndActionableList($employeeId, $actionableStatesList);
 
         $this->assertNull($attendanceRecord);
     }
@@ -148,7 +150,7 @@ class AttendanceDaoTest extends PHPUnit_Framework_TestCase {
         $action = "EDIT";
         $resultingState = "INITIAL";
 
-        $RecordExist = $this->attendanceDao->getSavedConfiguration($workflow, $state, $role, $action, $resultingState);
+        $RecordExist = $this->attendanceDao->hasSavedConfiguration($workflow, $state, $role, $action, $resultingState);
 
         $this->assertTrue($RecordExist);
 
@@ -158,7 +160,7 @@ class AttendanceDaoTest extends PHPUnit_Framework_TestCase {
         $action = "EDIT";
         $resultingState = "PUNCHED OUT";
 
-        $RecordExist = $this->attendanceDao->getSavedConfiguration($workflow, $state, $role, $action, $resultingState);
+        $RecordExist = $this->attendanceDao->hasSavedConfiguration($workflow, $state, $role, $action, $resultingState);
 
         $this->assertFalse($RecordExist);
     }

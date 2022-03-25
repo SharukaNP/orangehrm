@@ -19,8 +19,7 @@
  */
 
 require_once ROOT_PATH.'/installer/utils/UniqueIDGenerator.php';
-require_once ROOT_PATH.'/symfony/lib/vendor/phpseclib/phpseclib/phpseclib/Crypt/Random.php';
-require_once ROOT_PATH.'/symfony/plugins/orangehrmCorePlugin/lib/utility/PasswordHash.php';
+require_once ROOT_PATH.'/symfony/plugins/orangehrmCorePlugin/Utility/PasswordHash.php';
 require_once ROOT_PATH.'/installer/SystemConfiguration.php';
 require_once ROOT_PATH.'/installer/Messages.php';
 
@@ -33,7 +32,7 @@ class ApplicationSetupUtility {
      * @return string
      */
     public static function getErrorLogPath() {
-        return realpath(dirname(__FILE__)). DIRECTORY_SEPARATOR . 'log.txt';
+        return realpath(__DIR__ . '/../symfony/log') . DIRECTORY_SEPARATOR.  'installer.log';
     }
 
     public static function createDB() {
@@ -121,7 +120,7 @@ public static function initUniqueIDs() {
 	return true;
 }
 
-public static function fillData($phase=1, $source='/dbscript/dbscript-') {
+public static function fillData($phase=1, $source='/installer/dbscript/dbscript-') {
 	$source .= $phase.'.sql';
 	self::connectDB();
 
@@ -179,7 +178,7 @@ public static function fillData($phase=1, $source='/dbscript/dbscript-') {
 
         error_log (date("r")." Fill Data Phase $phase - Connected to the DB Server\n",3, self::getErrorLogPath());
 
-        $query = "INSERT INTO `hs_hr_config` ( `key`, `value`) VALUES ('csrf_secret', '{$csrfKey}');";
+        $query = "INSERT INTO `hs_hr_config` ( `name`, `value`) VALUES ('csrf_secret', '{$csrfKey}');";
 
         if (!mysqli_query(self::$conn, $query)) {
             $_SESSION['error'] = 'Unable to initialize csrf key (' . mysqli_error(self::$conn) . ')';
@@ -188,7 +187,7 @@ public static function fillData($phase=1, $source='/dbscript/dbscript-') {
     }
 
     public static function createCsrfKey() {
-        return bin2hex(\phpseclib\Crypt\Random::string(55));
+        return bin2hex(random_bytes(55));
     }
 
 public static function createDBUser() {
@@ -249,7 +248,7 @@ public static function createUser() {
 		return;
 	}
 
-    $passwordHasher = new PasswordHash();
+    $passwordHasher = new OrangeHRM\Core\Utility\PasswordHash();
     $hash = $passwordHasher->hash($_SESSION['defUser']['AdminPassword']);
 
 	$query = "INSERT INTO `ohrm_user` ( `user_name`, `user_password`,`user_role_id`) VALUES ('" .$_SESSION['defUser']['AdminUserName']. "','".$hash."','1')";
@@ -295,7 +294,7 @@ class Conf {
 
 		\$this->dbhost	= '$dbHost';
 		\$this->dbport 	= '$dbHostPort';
-		if(defined('ENVIRNOMENT') && ENVIRNOMENT == 'test'){
+		if(defined('ENVIRONMENT') && ENVIRONMENT == 'test'){
 		\$this->dbname    = 'test_$dbName';		
 		}else {
 		\$this->dbname    = '$dbName';
@@ -387,7 +386,7 @@ public static function writeLog() {
 
 	$Content .= "OrangeHRM Installation Log\n\n";
 
-	$filename = 'installer/log.txt';
+	$filename = 'symfony/log/installer.log';
 	$handle = fopen($filename, 'w');
 	fwrite($handle, $Content);
 	fclose($handle);
@@ -505,7 +504,7 @@ public static function install() {
 
 		case 5 :	error_log (date("r")." Write Conf - Starting\n",3, self::getErrorLogPath());
 					self::writeConfFile();
-					self::writeSymfonyDbConfigFile();
+					//self::writeSymfonyDbConfigFile();
 					error_log (date("r")." Write Conf - Done\n",3, self::getErrorLogPath());
 					if (!isset($_SESSION['error'])) {
 						$_SESSION['INSTALLING'] = 6;

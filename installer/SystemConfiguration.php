@@ -18,7 +18,7 @@
  *
  */
 
-include_once(realpath(dirname(__FILE__)) . '/../symfony/plugins/orangehrmCorePlugin/lib/utility/PasswordHash.php');
+include_once(realpath(dirname(__FILE__)) . '/../symfony/plugins/orangehrmCorePlugin/Utility/PasswordHash.php');
 
 class SystemConfiguration
 {
@@ -88,7 +88,7 @@ class SystemConfiguration
      */
     public function setLanguage($languageCode)
     {
-        $query = "UPDATE `hs_hr_config` SET `value` = ? WHERE `hs_hr_config`.`key` = 'admin.localization.default_language'";
+        $query = "UPDATE `hs_hr_config` SET `value` = ? WHERE `hs_hr_config`.`name` = 'admin.localization.default_language'";
         $dbConnection = $this->createDbConnection();
         $statement = $dbConnection->prepare($query);
         $statement->execute(array($languageCode));
@@ -142,7 +142,7 @@ class SystemConfiguration
      */
     public function createAdminUser($userName, $password)
     {
-        $passwordHasher = new PasswordHash();
+        $passwordHasher = new OrangeHRM\Core\Utility\PasswordHash();
         $hash = $passwordHasher->hash($password);
 
         $query = "INSERT INTO `ohrm_user` (`user_role_id`, `emp_number`, `user_name`, `user_password`) VALUES ('1', '1', ?, ?)";
@@ -182,7 +182,7 @@ class SystemConfiguration
             $ohrmVersion,
             $currentTimestamp
         );
-        $query = "INSERT INTO `hs_hr_config` (`key`, `value`) VALUES (?, ?)";
+        $query = "INSERT INTO `hs_hr_config` (`name`, `value`) VALUES (?, ?)";
         $dbConnection = $this->createDbConnection();
         $statement = $dbConnection->prepare($query);
         $statement->execute(array(self::KEY_INSTANCE_IDENTIFIER, $instanceIdentifier));
@@ -301,7 +301,7 @@ class SystemConfiguration
             $ohrmVersion,
             $currentTimestamp
         );
-        $query = "INSERT INTO `hs_hr_config` (`key`, `value`) VALUES (?, ?)";
+        $query = "INSERT INTO `hs_hr_config` (`name`, `value`) VALUES (?, ?)";
         $dbConnection = $this->createDbConnection();
         $statement = $dbConnection->prepare($query);
         $statement->execute(array(self::KEY_INSTANCE_IDENTIFIER_CHECKSUM, $instanceIdentifierChecksum));

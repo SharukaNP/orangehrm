@@ -1,0 +1,121 @@
+.orangehrm-header-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 1.2rem;
+  align-items: center;
+  & .oxd-button {
+    white-space: nowrap;
+  }
+}
+
+.orangehrm-main-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.orangehrm-sub-title {
+  padding: 0.25rem 0 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.orangehrm-left-space {
+  margin-left: 10px;
+}
+
+.orangehrm-card-container {
+  background-color: $oxd-white-color;
+  border-radius: 1.2rem;
+  padding: 1.2rem;
+}
+
+.orangehrm-container {
+  background-color: $oxd-interface-gray-lighten-2-color;
+  /*border-radius: 1.2rem;*/
+  padding: 0.5rem;
+
+  & .oxd-table-header-cell {
+    & .oxd-checkbox-input {
+      border: $oxd-border $oxd-interface-gray-color;
+    }
+  }
+
+  & .oxd-table-card {
+    .card-header-slot-content .data {
+      font-size: 1rem;
+    }
+  }
+}
+
+.orangehrm-paper-container {
+  background-color: $oxd-white-color;
+  border-radius: 1.2rem;
+}
+
+.orangehrm-horizontal-padding {
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+}
+
+.orangehrm-vertical-padding {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+}
+
+.orangehrm-top-padding {
+  padding-top: 1.2rem;
+}
+
+.orangehrm-horizontal-margin {
+  margin-left: 1.2rem;
+  margin-right: 1.2rem;
+}
+
+.orangehrm-bottom-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding: 1.2rem;
+}
+
+.orangehrm-background-container {
+  padding: 1.5rem 0;
+  flex: 1;
+}
+
+.orangehrm-full-width-grid {
+  width: 100%;
+}
+
+.orangehrm-input-hint {
+  font-size: 0.75rem;
+  margin-top: -15px;
+  padding-bottom: 1rem;
+}
+
+.orangehrm-clear-margins {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.orangehrm-copyright {
+  font-size: 0.8rem;
+  text-align: center;
+
+  & a {
+    color: $oxd-interface-gray-darken-2-color;
+  }
+}
+
+.orangehrm-form-action {
+  gap: 10px;
+  flex-wrap: wrap !important;
+  @media screen and (max-width: 600px) {
+    .orangehrm-form-hint {
+      width: 100%;
+    }
+  }
+}

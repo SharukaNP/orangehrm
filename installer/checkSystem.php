@@ -18,8 +18,7 @@
  *
  */
 
-require_once(ROOT_PATH . '/installer/utils/installUtil.php');
-require_once(ROOT_PATH . '/installer/environmentCheck/SystemValidator.php');
+require_once realpath(__DIR__ . '/bootstrap.php');
 
 $systemValidator = new SystemValidator();
 
@@ -250,21 +249,6 @@ function sysCheckPassed() {
             <td align="right" class="tdValues"><strong>
             <?php
                if(is_writable(ROOT_PATH . '/symfony/config')) {
-                  echo "<b><font color='green'>OK</font></b>";
-				} else {
-                  echo "<b><font color='red'>Not Writeable</font>";
-                  echo "<b><font color='red'><sup>*</sup></font></b>";
-                  $error_found = true;
-               }
-            ?>
-            </strong></td>
-          </tr>
-          <tr>
-            <td class="tdComponent">Write Permissions for "symfony/apps/orangehrm/config"</td>
-
-            <td align="right" class="tdValues"><strong>
-            <?php
-               if(is_writable(ROOT_PATH . '/symfony/apps/orangehrm/config')) {
                   echo "<b><font color='green'>OK</font></b>";
 				} else {
                   echo "<b><font color='red'>Not Writeable</font>";

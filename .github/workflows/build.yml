@@ -1,0 +1,54 @@
+name: Build
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Validate composer.json and composer.lock
+        run: |
+          cd symfony
+          composer validate --strict
+
+      - name: Parse Git short hash
+        run: echo "git_short_hash=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          cd symfony
+          php7.4 -f /usr/bin/composer install --no-dev
+          php7.4 -f /usr/bin/composer dump-autoload --optimize --no-dev --classmap-authoritative
+          cd client
+          yarn install
+
+      - name: Dump build file
+        run: |
+          cd build
+          echo "SHA: $GITHUB_SHA" > build
+          echo "Repository: $GITHUB_REPOSITORY" >> build
+          echo "Branch: $GITHUB_HEAD_REF" >> build
+
+      - name: Run build
+        run: |
+          cd symfony/client
+          yarn build
+          cd ../..
+          cd build
+          wget https://www.phing.info/get/phing-latest.phar
+          php phing-latest.phar dist
+
+      - name: Find build file
+        run: |
+          cd build
+          echo "file_path=$(find dist/ -maxdepth 1 -name '*.zip')" >> $GITHUB_ENV
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: orangehrm-${{ env.git_short_hash }}
+          path: build/${{ env.file_path }}
