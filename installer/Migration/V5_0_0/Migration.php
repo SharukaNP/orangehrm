@@ -189,7 +189,7 @@ class Migration extends AbstractMigration
         $this->createQueryBuilder()
             ->update('ohrm_menu_item', 'menuItem')
             ->set('menuItem.status', ':status')
-            ->setParameter('status', $defined)
+            ->setParameter('status', $defined, ParameterType::BOOLEAN)
             ->andWhere('menuItem.parent_id = :parentId')
             ->setParameter('parentId', $parentMenuItemId)
             ->executeQuery();
