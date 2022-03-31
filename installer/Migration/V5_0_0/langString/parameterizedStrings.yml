@@ -1,0 +1,22 @@
+paramStrings:
+    - ['Should be a valid date in %format% format']
+    - ['Should be less than %amount%']
+    - ['Should be less than %amount% characters']
+    - ['Welcome %username%'] //not found
+    - ['Should be less than %number% digits']
+    - ['Should be greater than %amount%']
+    - ['Should have at least %number% characters'] //not found
+    - ['Matches %count% employees']   // changed to a pluralized string
+    - ['Should be a number with upto %count% decimal places']
+    - ['%months% month(s)']
+    - ['You do not have credentials to access PIM for employee %employee_name%']
+    - ['Employee with Employee Number %emp_number% not found!']
+    - ['Leave Request (%date_range%) %name%']
+    - ['Bulk Assigning Leave Entitlement to %count% Employees. Please Wait']
+    - ['Should be greater than %number%']
+    - ['Should be less than %number%']
+    - ['Rating should be less than or equal to %number%']
+    - ['Should Be a Valid Date in %format% Format']
+    - ['Should Be a Valid Time in %format% Format']
+    - ['Existing Entitlement value %oldvalue% will be updated to %newvalue%']
+    - ['Users who seek access to their data, or who seek to correct, amend, or delete the given information should direct their requests to Data@orangehrm.com with the subject "Purge Records (Instance Identifier : %instanceid%)".']

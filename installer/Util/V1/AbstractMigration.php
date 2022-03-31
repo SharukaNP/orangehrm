@@ -87,7 +87,7 @@ abstract class AbstractMigration
     public function getLangHelper(): LanguageHelper
     {
         if (!$this->languageHelper instanceof LanguageHelper) {
-            $this->languageHelper = new LanguageHelper();
+            $this->languageHelper = new LanguageHelper($this->getConnection());
         }
         return $this->languageHelper;
     }

@@ -23,6 +23,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OrangeHRM\Core\Traits\ORM\EntityManagerHelperTrait;
+use OrangeHRM\Installer\Migration\V5_0_0\LangStringHelper;
 use Symfony\Component\Yaml\Yaml;
 
 class TranslationTool

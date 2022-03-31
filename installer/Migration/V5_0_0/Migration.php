@@ -158,6 +158,7 @@ class Migration extends AbstractMigration
             'unit_id',
             ['Type' => Type::getType(Types::STRING), 'Length' => 255]
         );
+        $this->updateLanguageStrings();
     }
 
     /**
@@ -247,5 +248,31 @@ class Migration extends AbstractMigration
                 ->setParameter('screenUrl', $screenUrl);
         }
         $qb->executeQuery();
+    }
+
+    /**
+     * @return void
+     */
+    private function updateLanguageStrings(): void
+    {
+        $groupList =[['name'=>'attendance','title'=>'Attendance'],['name'=>'help','title'=>'Help'],['name'=>'auth','title'=>'Auth']];
+        foreach ($groupList as $item){
+            $qb = $this->getConnection()->createQueryBuilder()
+                ->insert('ohrm_i18n_group')
+                ->values([
+                    'name' => ':name',
+                    'title' => ':title',
+                ])
+                ->setParameter('name',$item['name'])
+                ->setParameter('title',$item['title']);
+            $qb->executeQuery();
+        }
+        $groups =['admin','general','pim','leave','time','attendance','maintenance','help','auth'];
+        foreach ($groups as $group){
+            $groupId = $this->getLangHelper()->getGroupId($group);
+            $langArray = $this->getLangHelper()->getLangStringArray($group);
+            $this->getLangHelper()->deleteNonCustomLangStrings($groupId);
+            $this->getLangHelper()->versionMigrateLangStrings($langArray, $groupId);
+        }
     }
 }
