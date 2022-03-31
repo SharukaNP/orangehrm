@@ -20,6 +20,7 @@
 namespace OrangeHRM\Installer\Util\V1;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use OrangeHRM\Installer\Util\V1\Dto\Api;
 use OrangeHRM\Installer\Util\V1\Dto\DataGroup;
 use OrangeHRM\Installer\Util\V1\Dto\Screen;
@@ -107,10 +108,10 @@ class DataGroupHelper
                 )
                 ->setParameter('name', $apiPermission->getName())
                 ->setParameter('description', $apiPermission->getDescription())
-                ->setParameter('read', $apiPermission->getAllowed()->canRead())
-                ->setParameter('create', $apiPermission->getAllowed()->canCreate())
-                ->setParameter('update', $apiPermission->getAllowed()->canUpdate())
-                ->setParameter('delete', $apiPermission->getAllowed()->canDelete());
+                ->setParameter('read', $apiPermission->getAllowed()->canRead(), ParameterType::BOOLEAN)
+                ->setParameter('create', $apiPermission->getAllowed()->canCreate(), ParameterType::BOOLEAN)
+                ->setParameter('update', $apiPermission->getAllowed()->canUpdate(), ParameterType::BOOLEAN)
+                ->setParameter('delete', $apiPermission->getAllowed()->canDelete(), ParameterType::BOOLEAN);
             $qb->executeQuery();
 
             $qb = $this->getConnection()->createQueryBuilder()
@@ -151,11 +152,11 @@ class DataGroupHelper
                     )
                     ->setParameter('dataGroupId', $id)
                     ->setParameter('userRoleId', $this->getUserRoleIdByName($permission->getUserRole()))
-                    ->setParameter('read', $permission->canRead())
-                    ->setParameter('create', $permission->canCreate())
-                    ->setParameter('update', $permission->canUpdate())
-                    ->setParameter('delete', $permission->canDelete())
-                    ->setParameter('self', $permission->isSelf());
+                    ->setParameter('read', $permission->canRead(), ParameterType::BOOLEAN)
+                    ->setParameter('create', $permission->canCreate(), ParameterType::BOOLEAN)
+                    ->setParameter('update', $permission->canUpdate(), ParameterType::BOOLEAN)
+                    ->setParameter('delete', $permission->canDelete(), ParameterType::BOOLEAN)
+                    ->setParameter('self', $permission->isSelf(), ParameterType::BOOLEAN);
                 $qb->executeQuery();
             }
         }
@@ -182,10 +183,10 @@ class DataGroupHelper
                 )
                 ->setParameter('name', $dataGroupPermission->getName())
                 ->setParameter('description', $dataGroupPermission->getDescription())
-                ->setParameter('read', $dataGroupPermission->getAllowed()->canRead())
-                ->setParameter('create', $dataGroupPermission->getAllowed()->canCreate())
-                ->setParameter('update', $dataGroupPermission->getAllowed()->canUpdate())
-                ->setParameter('delete', $dataGroupPermission->getAllowed()->canDelete());
+                ->setParameter('read', $dataGroupPermission->getAllowed()->canRead(), ParameterType::BOOLEAN)
+                ->setParameter('create', $dataGroupPermission->getAllowed()->canCreate(), ParameterType::BOOLEAN)
+                ->setParameter('update', $dataGroupPermission->getAllowed()->canUpdate(), ParameterType::BOOLEAN)
+                ->setParameter('delete', $dataGroupPermission->getAllowed()->canDelete(), ParameterType::BOOLEAN);
             $qb->executeQuery();
 
             $id = $this->getDataGroupIdByName($dataGroupPermission->getName());
@@ -206,11 +207,11 @@ class DataGroupHelper
                     )
                     ->setParameter('dataGroupId', $id)
                     ->setParameter('userRoleId', $this->getUserRoleIdByName($permission->getUserRole()))
-                    ->setParameter('read', $permission->canRead())
-                    ->setParameter('create', $permission->canCreate())
-                    ->setParameter('update', $permission->canUpdate())
-                    ->setParameter('delete', $permission->canDelete())
-                    ->setParameter('self', $permission->isSelf());
+                    ->setParameter('read', $permission->canRead(), ParameterType::BOOLEAN)
+                    ->setParameter('create', $permission->canCreate(), ParameterType::BOOLEAN)
+                    ->setParameter('update', $permission->canUpdate(), ParameterType::BOOLEAN)
+                    ->setParameter('delete', $permission->canDelete(), ParameterType::BOOLEAN)
+                    ->setParameter('self', $permission->isSelf(), ParameterType::BOOLEAN);
                 $qb->executeQuery();
             }
         }
@@ -259,10 +260,10 @@ class DataGroupHelper
                     )
                     ->setParameter('screenId', $id)
                     ->setParameter('userRoleId', $this->getUserRoleIdByName($permission->getUserRole()))
-                    ->setParameter('read', $permission->canRead())
-                    ->setParameter('create', $permission->canCreate())
-                    ->setParameter('update', $permission->canUpdate())
-                    ->setParameter('delete', $permission->canDelete());
+                    ->setParameter('read', $permission->canRead(), ParameterType::BOOLEAN)
+                    ->setParameter('create', $permission->canCreate(), ParameterType::BOOLEAN)
+                    ->setParameter('update', $permission->canUpdate(), ParameterType::BOOLEAN)
+                    ->setParameter('delete', $permission->canDelete(), ParameterType::BOOLEAN);
                 $qb->executeQuery();
             }
         }

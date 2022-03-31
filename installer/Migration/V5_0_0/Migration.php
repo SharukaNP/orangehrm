@@ -20,6 +20,7 @@
 namespace OrangeHRM\Installer\Migration\V5_0_0;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
@@ -62,7 +63,7 @@ class Migration extends AbstractMigration
         $this->createQueryBuilder()
             ->update('ohrm_user_role_data_group', 'dataGroupPermission')
             ->set('dataGroupPermission.can_update', ':canUpdate')
-            ->setParameter('canUpdate', false)
+            ->setParameter('canUpdate', false, ParameterType::BOOLEAN)
             ->andWhere('dataGroupPermission.data_group_id = :dataGroupId')
             ->setParameter('dataGroupId', $this->getDataGroupHelper()->getDataGroupIdByName('time_projects'))
             ->andWhere('dataGroupPermission.user_role_id = :userRoleId')
