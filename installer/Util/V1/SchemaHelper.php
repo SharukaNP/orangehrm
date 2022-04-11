@@ -19,10 +19,12 @@
 
 namespace OrangeHRM\Installer\Util\V1;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
@@ -159,5 +161,29 @@ class SchemaHelper
         $table->addOption('engine', 'InnoDB');
         $table->setSchemaManager($this->getSchemaManager());
         return $table;
+    }
+
+
+    /**
+     * @param array $table
+     * @return bool
+     * @throws Exception
+     */
+    public function tableExists(array $table): bool
+    {
+        if ($this->getSchemaManager()->tablesExist($table)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $tableName
+     * @return void
+     */
+    public function dropPrimaryKey(string $tableName): void
+    {
+        $table = $this->getSchemaManager()->listTableDetails($tableName);
+        $this->getSchemaManager()->dropIndex($table->getPrimaryKey(), $table);
     }
 }
