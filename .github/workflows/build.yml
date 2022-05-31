@@ -35,6 +35,13 @@ jobs:
           echo "Repository: $GITHUB_REPOSITORY" >> build
           echo "Branch: $GITHUB_HEAD_REF" >> build
 
+      - name: Change product mode
+        env:
+          PRODUCT_MODE: ${{ secrets.PRODUCT_MODE }}
+        run: |
+          echo "PRODUCT_MODE: $PRODUCT_MODE"
+          sed -i "s/public const PRODUCT_MODE = self::MODE_DEV;/public const PRODUCT_MODE = self::$PRODUCT_MODE;/g" src/lib/config/Config.php
+
       - name: Run build
         run: |
           cd src/client
