@@ -21,6 +21,7 @@ namespace OrangeHRM\Installer\Migration\V5_1_0;
 
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Types\Types;
+use OrangeHRM\Config\Config;
 use OrangeHRM\Installer\Util\V1\AbstractMigration;
 
 class Migration extends AbstractMigration
@@ -50,11 +51,17 @@ class Migration extends AbstractMigration
         foreach ($groups as $group) {
             $this->getLangStringHelper()->deleteNonCustomizedLangStrings($group);
             $this->getLangStringHelper()->insertOrUpdateLangStrings($group);
+            if (Config::PRODUCT_MODE === Config::MODE_TEST) {
+                $this->getTestTranslationHelper()->execute($group, 'V5_1_0');
+            }
         }
 
         $oldGroups = ['admin', 'general', 'pim', 'leave', 'time', 'attendance', 'maintenance', 'help', 'auth'];
         foreach ($oldGroups as $group) {
             $this->getLangStringHelper()->insertOrUpdateLangStrings($group);
+            if (Config::PRODUCT_MODE === Config::MODE_TEST) {
+                $this->getTestTranslationHelper()->execute($group, 'V5_1_0');
+            }
         }
 
         $langCodes = [

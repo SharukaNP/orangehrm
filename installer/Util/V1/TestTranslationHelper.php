@@ -17,19 +17,44 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\DevTools\Command\Util;
+namespace OrangeHRM\Installer\Util\V1;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
-use OrangeHRM\Core\Traits\ORM\EntityManagerHelperTrait;
 use OrangeHRM\Installer\Migration\V5_0_0\LangStringHelper;
+use OrangeHRM\Installer\Util\V1\Dto\TestTranslationUnit;
 use Symfony\Component\Yaml\Yaml;
 
-class TranslationTestTool
+class TestTranslationHelper
 {
-    use EntityManagerHelperTrait;
+    private Connection $connection;
 
     protected ?LangStringHelper $langStringHelper = null;
+
+    /**
+     * @param Connection $connection
+     */
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder(): QueryBuilder
+    {
+        return $this->getConnection()->createQueryBuilder();
+    }
 
     /**
      * @param string $groupName
@@ -38,6 +63,8 @@ class TranslationTestTool
      */
     public function execute(string $groupName, string $version)
     {
+        var_dump('TEST');
+        var_dump($groupName);
         $langCode = 'zz_ZZ';   //the test language will be added as zz_ZZ
         $this->addTranslations($langCode, $groupName, $version);
         //setting the default language to tr
@@ -58,25 +85,23 @@ class TranslationTestTool
      */
     private function addTranslations(string $language, string $groupName, string $version): void
     {
-        $filepath2 = 'installer/Migration/'.$version.'/lang-string/' . $groupName . '.yaml';
+        $filepath2 = 'installer/Migration/' . $version . '/lang-string/' . $groupName . '.yaml';
         $yml2 = Yaml::parseFile($filepath2);
         $langStrings = array_shift($yml2);
-        if (! empty($langString)) {
-            foreach ($langStrings as $langString) {
-                $sourceObj = new TranslationUnit('tr_' . $langString['value'], null, $langString['value'], );
-                $this->saveTranslationRecord($groupName, $sourceObj, $language);
-            }
+        foreach ($langStrings as $langString) {
+            $sourceObj = new TestTranslationUnit('tr_' . $langString['value'], null, $langString['value'], );
+            $this->saveTranslationRecord($groupName, $sourceObj, $language);
         }
     }
 
     /**
      * @param string $groupName
-     * @param TranslationUnit $source
+     * @param TestTranslationUnit $source
      * @param string $language
      * @return void
      * @throws Exception
      */
-    private function saveTranslationRecord(string $groupName, TranslationUnit $source, string $language): void
+    private function saveTranslationRecord(string $groupName, TestTranslationUnit $source, string $language): void
     {
         $groupId = $this->getLangStringHelper()->getGroupId($groupName);
         $langStringId = $this->getLangStringHelper()->getLangStringIdByValueAndGroup($source->getSource(), $groupId);
@@ -86,6 +111,7 @@ class TranslationTestTool
             );
         }
         $langId = $this->getLanguageId($language);
+        var_dump($langId);
         $existTranslation = $this->getTranslationRecord($langStringId, $langId);
         if ($existTranslation != null) {
             // TODO hanldle customized translations
@@ -110,7 +136,7 @@ class TranslationTestTool
     public function getLangStringHelper(): ?LangStringHelper
     {
         if (is_null($this->langStringHelper)) {
-            $this->langStringHelper = new LangStringHelper($this->getEntityManager()->getConnection());
+            $this->langStringHelper = new LangStringHelper($this->getConnection());
         }
         return $this->langStringHelper;
     }
@@ -130,13 +156,6 @@ class TranslationTestTool
         return $searchQuery->executeQuery()->fetchOne();
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    protected function createQueryBuilder(): QueryBuilder
-    {
-        return $this->getEntityManager()->getConnection()->createQueryBuilder();
-    }
 
     /**
      * @param array $langStringId

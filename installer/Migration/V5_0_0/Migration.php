@@ -24,6 +24,7 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
+use OrangeHRM\Config\Config;
 use OrangeHRM\Installer\Util\V1\AbstractMigration;
 
 class Migration extends AbstractMigration
@@ -191,10 +192,17 @@ class Migration extends AbstractMigration
         $this->updateModuleDisplayNames();
         $this->insertI18nGroups();
 
+        if (Config::PRODUCT_MODE === Config::MODE_TEST) {
+            $this->getTestTranslationHelper()->setTestLanguage('zz_ZZ');
+        }
+
         $groups = ['admin', 'general', 'pim', 'leave', 'time', 'attendance', 'maintenance', 'help', 'auth'];
         foreach ($groups as $group) {
             $this->getLangStringHelper()->deleteNonCustomizedLangStrings($group);
             $this->getLangStringHelper()->insertOrUpdateLangStrings($group);
+            if (Config::PRODUCT_MODE === Config::MODE_TEST) {
+                $this->getTestTranslationHelper()->execute($group, 'V5_0_0');
+            }
         }
 
         $langCodes = [

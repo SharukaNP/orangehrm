@@ -30,6 +30,7 @@ abstract class AbstractMigration
     private ?DataGroupHelper $dataGroupHelper = null;
     private ?LanguageHelper $languageHelper = null;
     private ?ConfigHelper $configHelper = null;
+    private ?TestTranslationHelper $testTranslationHelper =null;
 
     /**
      * @return AbstractSchemaManager
@@ -86,6 +87,17 @@ abstract class AbstractMigration
             $this->languageHelper = new LanguageHelper($this->getConnection());
         }
         return $this->languageHelper;
+    }
+
+    /**
+     * @return TestTranslationHelper|null
+     */
+    public function getTestTranslationHelper(): TestTranslationHelper
+    {
+        if (!$this->testTranslationHelper instanceof TestTranslationHelper) {
+            $this->testTranslationHelper = new TestTranslationHelper($this->getConnection());
+        }
+        return $this->testTranslationHelper;
     }
 
     /**
