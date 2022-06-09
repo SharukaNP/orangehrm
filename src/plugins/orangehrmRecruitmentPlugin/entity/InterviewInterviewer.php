@@ -17,41 +17,31 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\Performance\Exception;
+namespace OrangeHRM\Entity;
 
-use Exception;
+use Doctrine\ORM\Mapping as ORM;
 
-class ReviewServiceException extends Exception
+/**
+ * @ORM\Table(name="ohrm_job_interview_interviewer")
+ * @ORM\Entity
+ */
+class InterviewInterviewer
 {
     /**
-     * @return static
+     * @var Interview
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="OrangeHRM\Entity\Interview", cascade={"persist"})
+     * @ORM\JoinColumn(name="interview_id", referencedColumnName="id", nullable=false)
      */
-    public static function activateWithoutJobTitle(): self
-    {
-        return new self("Cannot activate review for employees who doesn't have a Job Title with KPI");
-    }
+    private Interview $interview;
 
     /**
-     * @return static
+     * @var Employee
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="OrangeHRM\Entity\Employee", cascade={"persist"})
+     * @ORM\JoinColumn(name="interviewer_id", referencedColumnName="emp_number", nullable=false)
      */
-    public static function activateWithoutKPI(): self
-    {
-        return new self("Cannot activate review without KPIs");
-    }
-
-    /**
-     * @return static
-     */
-    public static function pastEmployeeForReviewer(): self
-    {
-        return new self("Cannot add a past employee as reviewer");
-    }
-
-    /**
-     * @return static
-     */
-    public static function invalidSupervisor(): self
-    {
-        return new self("Selected supervisor for reviewer is invalid");
-    }
+    private Employee $interviewer;
 }

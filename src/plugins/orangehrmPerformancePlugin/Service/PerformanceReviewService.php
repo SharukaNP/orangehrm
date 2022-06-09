@@ -25,10 +25,12 @@ use OrangeHRM\Entity\PerformanceReview;
 use OrangeHRM\Entity\ReviewerRating;
 use OrangeHRM\Performance\Dao\PerformanceReviewDao;
 use OrangeHRM\Performance\Exception\ReviewServiceException;
+use OrangeHRM\Pim\Traits\Service\EmployeeServiceTrait;
 
 class PerformanceReviewService
 {
     use AuthUserTrait;
+    use EmployeeServiceTrait;
 
     private ?PerformanceReviewDao $performanceReviewDao = null;
 
@@ -45,19 +47,14 @@ class PerformanceReviewService
 
     /**
      * @param PerformanceReview $performanceReview
-     * @param int $reviewerId
+     * @param int $reviewerEmpNumber
      * @return PerformanceReview
      * @throws ReviewServiceException
      */
-    public function activateReview(PerformanceReview $performanceReview, int $reviewerId): PerformanceReview
+    public function activateReview(PerformanceReview $performanceReview, int $reviewerEmpNumber): PerformanceReview
     {
-        if (! $performanceReview->getEmployee()->getJobTitle() instanceof JobTitle) {
-            throw ReviewServiceException::activateWithoutJobTitle();
-        }
-        if ($this->getPerformanceReviewDao()->getReviewKPI($performanceReview) == null) {
-            throw ReviewServiceException::activateWithoutKPI();
-        }
-        return $this->getPerformanceReviewDao()->createReview($performanceReview, $reviewerId);
+        $this->activateReviewCommonExceptions($performanceReview);
+        return $this->getPerformanceReviewDao()->createReview($performanceReview, $reviewerEmpNumber);
     }
 
     /**
@@ -67,13 +64,34 @@ class PerformanceReviewService
      */
     public function updateActivateReview(PerformanceReview $performanceReview, int $reviewerEmpNumber): PerformanceReview
     {
+        $this->activateReviewCommonExceptions($performanceReview);
+        if (!($this->getEmployeeService()->getEmployeeDao()->getEmployeeByEmpNumber($reviewerEmpNumber)->getEmployeeTerminationRecord()
+            == null)) {
+            throw ReviewServiceException::pastEmployeeForReviewer();
+        }
+        if ($this->getPerformanceReviewDao()->getSupervisorRecord(
+            $performanceReview->getEmployee()->getEmpNumber(),
+            $reviewerEmpNumber
+        ) == null) {
+            throw ReviewServiceException::invalidSupervisor();
+        }
+
+        return $this->getPerformanceReviewDao()->updateReview($performanceReview, $reviewerEmpNumber);
+    }
+
+    /**
+     * @param PerformanceReview $performanceReview
+     * @return void
+     * @throws ReviewServiceException
+     */
+    private function activateReviewCommonExceptions(PerformanceReview $performanceReview): void
+    {
         if (!$performanceReview->getEmployee()->getJobTitle() instanceof JobTitle) {
             throw ReviewServiceException::activateWithoutJobTitle();
         }
         if ($this->getPerformanceReviewDao()->getReviewKPI($performanceReview) == null) {
             throw ReviewServiceException::activateWithoutKPI();
         }
-        return $this->getPerformanceReviewDao()->updateReview($performanceReview, $reviewerEmpNumber);
     }
 
     public function saveAndUpdateReviewRatings(PerformanceReview $review, array $ratings, array $kpisForReview): void

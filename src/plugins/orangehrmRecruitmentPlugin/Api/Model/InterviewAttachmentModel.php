@@ -17,41 +17,38 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\Performance\Exception;
+namespace OrangeHRM\Recruitment\Api\Model;
 
-use Exception;
+use OrangeHRM\Core\Api\V2\Serializer\ModelTrait;
+use OrangeHRM\Core\Api\V2\Serializer\Normalizable;
+use OrangeHRM\Entity\InterviewAttachment;
 
-class ReviewServiceException extends Exception
+class InterviewAttachmentModel implements Normalizable
 {
-    /**
-     * @return static
-     */
-    public static function activateWithoutJobTitle(): self
-    {
-        return new self("Cannot activate review for employees who doesn't have a Job Title with KPI");
-    }
+    use ModelTrait;
 
-    /**
-     * @return static
-     */
-    public static function activateWithoutKPI(): self
+    public function __construct(InterviewAttachment $interviewAttachment)
     {
-        return new self("Cannot activate review without KPIs");
-    }
-
-    /**
-     * @return static
-     */
-    public static function pastEmployeeForReviewer(): self
-    {
-        return new self("Cannot add a past employee as reviewer");
-    }
-
-    /**
-     * @return static
-     */
-    public static function invalidSupervisor(): self
-    {
-        return new self("Selected supervisor for reviewer is invalid");
+        $this->setEntity($interviewAttachment);
+        $this->setFilters(
+            [
+                'id',
+                ['getInterview', 'getId'],
+                'fileName',
+                'fileType',
+                'fileSize',
+                'comment',
+            ]
+        );
+        $this->setAttributeNames(
+            [
+                'id',
+                'interviewId',
+                ['attachment', 'fileName'],
+                ['attachment', 'fileType'],
+                ['attachment', 'fileSize'],
+                'comment',
+            ]
+        );
     }
 }

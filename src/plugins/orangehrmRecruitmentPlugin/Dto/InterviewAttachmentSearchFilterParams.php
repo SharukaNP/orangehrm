@@ -17,41 +17,37 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\Performance\Exception;
+namespace OrangeHRM\Recruitment\Dto;
 
-use Exception;
+use OrangeHRM\Core\Dto\FilterParams;
+use OrangeHRM\ORM\ListSorter;
 
-class ReviewServiceException extends Exception
+class InterviewAttachmentSearchFilterParams extends FilterParams
 {
     /**
-     * @return static
+     * @var int
      */
-    public static function activateWithoutJobTitle(): self
+    protected int $interviewId;
+
+    public function __construct()
     {
-        return new self("Cannot activate review for employees who doesn't have a Job Title with KPI");
+        $this->setSortField('attachment.interviewId');
+        $this->setSortOrder(ListSorter::ASCENDING);
     }
 
     /**
-     * @return static
+     * @return int
      */
-    public static function activateWithoutKPI(): self
+    public function getInterviewId(): int
     {
-        return new self("Cannot activate review without KPIs");
+        return $this->interviewId;
     }
 
     /**
-     * @return static
+     * @param int $interviewId
      */
-    public static function pastEmployeeForReviewer(): self
+    public function setInterviewId(int $interviewId): void
     {
-        return new self("Cannot add a past employee as reviewer");
-    }
-
-    /**
-     * @return static
-     */
-    public static function invalidSupervisor(): self
-    {
-        return new self("Selected supervisor for reviewer is invalid");
+        $this->interviewId = $interviewId;
     }
 }
