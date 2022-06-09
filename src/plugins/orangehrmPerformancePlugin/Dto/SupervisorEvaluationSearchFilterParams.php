@@ -17,35 +17,48 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\Performance\Api\Model;
+namespace OrangeHRM\Performance\Dto;
 
-use OrangeHRM\Core\Api\V2\Serializer\ModelTrait;
-use OrangeHRM\Core\Api\V2\Serializer\Normalizable;
-use OrangeHRM\Entity\ReviewerRating;
+use OrangeHRM\Core\Dto\FilterParams;
 
-class ReviewerRatingModel implements Normalizable
+class SupervisorEvaluationSearchFilterParams extends FilterParams
 {
-    use ModelTrait;
 
-    public function __construct(ReviewerRating $reviewerRating)
+    public const ALLOWED_SORT_FIELDS = [];
+
+    protected int $reviewId;
+    protected string $isSelfEvaluation;
+
+    /**
+     * @return int
+     */
+    public function getReviewId(): int
     {
-        $this->setEntity($reviewerRating);
-        $this->setFilters(
-            [
-                'id',
-                'rating',
-                'comment',
-                ['getKpi','getId'],
-            ]
-        );
-
-        $this->setAttributeNames(
-            [
-                'id',
-                'rating',
-                'comment',
-                'kpiId',
-            ]
-        );
+        return $this->reviewId;
     }
+
+    /**
+     * @param int $reviewId
+     */
+    public function setReviewId(int $reviewId): void
+    {
+        $this->reviewId = $reviewId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsSelfEvaluation(): string
+    {
+        return $this->isSelfEvaluation;
+    }
+
+    /**
+     * @param string $isSelfEvaluation
+     */
+    public function setIsSelfEvaluation(string $isSelfEvaluation): void
+    {
+        $this->isSelfEvaluation = $isSelfEvaluation;
+    }
+
 }

@@ -21,30 +21,34 @@ namespace OrangeHRM\Performance\Api\Model;
 
 use OrangeHRM\Core\Api\V2\Serializer\ModelTrait;
 use OrangeHRM\Core\Api\V2\Serializer\Normalizable;
-use OrangeHRM\Entity\ReviewerRating;
+use OrangeHRM\Entity\Reviewer;
 
-class ReviewerRatingModel implements Normalizable
+class ReviewerModel implements Normalizable
 {
     use ModelTrait;
 
-    public function __construct(ReviewerRating $reviewerRating)
+    public function __construct(Reviewer $reviewer)
     {
-        $this->setEntity($reviewerRating);
+        $this->setEntity($reviewer);
         $this->setFilters(
             [
-                'id',
-                'rating',
-                'comment',
-                ['getKpi','getId'],
+                ['getEmployee', 'getEmpNumber'],
+                ['getEmployee', 'getLastName'],
+                ['getEmployee', 'getFirstName'],
+                ['getEmployee', 'getMiddleName'],
+                ['getEmployee', 'getEmployeeId'],
+                ['getEmployee', 'getEmployeeTerminationRecord', 'getId'],
             ]
         );
-
         $this->setAttributeNames(
             [
                 'id',
-                'rating',
-                'comment',
-                'kpiId',
+                'empNumber',
+                'lastName',
+                'firstName',
+                'middleName',
+                'employeeId',
+                'terminationId',
             ]
         );
     }

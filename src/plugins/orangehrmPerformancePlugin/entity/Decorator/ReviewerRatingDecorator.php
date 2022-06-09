@@ -17,35 +17,39 @@
  * Boston, MA  02110-1301, USA
  */
 
-namespace OrangeHRM\Performance\Api\Model;
+namespace OrangeHRM\Entity\Decorator;
 
-use OrangeHRM\Core\Api\V2\Serializer\ModelTrait;
-use OrangeHRM\Core\Api\V2\Serializer\Normalizable;
+use OrangeHRM\Core\Traits\ORM\EntityManagerHelperTrait;
+use OrangeHRM\Entity\Kpi;
 use OrangeHRM\Entity\ReviewerRating;
 
-class ReviewerRatingModel implements Normalizable
+class ReviewerRatingDecorator
 {
-    use ModelTrait;
 
+    use EntityManagerHelperTrait;
+
+    protected ReviewerRating $reviewerRating;
+
+    /**
+     * @param ReviewerRating $reviewerRating
+     */
     public function __construct(ReviewerRating $reviewerRating)
     {
-        $this->setEntity($reviewerRating);
-        $this->setFilters(
-            [
-                'id',
-                'rating',
-                'comment',
-                ['getKpi','getId'],
-            ]
-        );
-
-        $this->setAttributeNames(
-            [
-                'id',
-                'rating',
-                'comment',
-                'kpiId',
-            ]
-        );
+        $this->reviewerRating = $reviewerRating;
     }
+
+    /**
+     * @return ReviewerRating
+     */
+    public function getReviewerRating(): ReviewerRating
+    {
+        return $this->reviewerRating;
+    }
+
+    public function setKpiByKpiId(int $kpiId): void
+    {
+        $kpi = $this->getReference(Kpi::class, $kpiId);
+        $this->getReviewerRating()->setKpi($kpi);
+    }
+
 }

@@ -19,13 +19,17 @@
 
 namespace OrangeHRM\Performance\Service;
 
+use OrangeHRM\Core\Traits\Auth\AuthUserTrait;
 use OrangeHRM\Entity\JobTitle;
 use OrangeHRM\Entity\PerformanceReview;
+use OrangeHRM\Entity\ReviewerRating;
 use OrangeHRM\Performance\Dao\PerformanceReviewDao;
 use OrangeHRM\Performance\Exception\ReviewServiceException;
 
 class PerformanceReviewService
 {
+    use AuthUserTrait;
+
     private ?PerformanceReviewDao $performanceReviewDao = null;
 
     /**
@@ -33,7 +37,7 @@ class PerformanceReviewService
      */
     public function getPerformanceReviewDao(): PerformanceReviewDao
     {
-        if (! ($this->performanceReviewDao instanceof PerformanceReviewDao)) {
+        if (!($this->performanceReviewDao instanceof PerformanceReviewDao)) {
             $this->performanceReviewDao = new PerformanceReviewDao();
         }
         return $this->performanceReviewDao;
@@ -63,7 +67,7 @@ class PerformanceReviewService
      */
     public function updateActivateReview(PerformanceReview $performanceReview, int $reviewerEmpNumber): PerformanceReview
     {
-        if (! $performanceReview->getEmployee()->getJobTitle() instanceof JobTitle) {
+        if (!$performanceReview->getEmployee()->getJobTitle() instanceof JobTitle) {
             throw ReviewServiceException::activateWithoutJobTitle();
         }
         if ($this->getPerformanceReviewDao()->getReviewKPI($performanceReview) == null) {
@@ -71,4 +75,41 @@ class PerformanceReviewService
         }
         return $this->getPerformanceReviewDao()->updateReview($performanceReview, $reviewerEmpNumber);
     }
+
+    public function saveAndUpdateReviewRatings(PerformanceReview $review, array $ratings, array $kpisForReview): void
+    {
+        $reviewerRatings = $this->createRatingsFromRows($review, $ratings, $kpisForReview);
+        $this->getPerformanceReviewDao()->saveAndUpdateReviewerRatings($reviewerRatings);
+    }
+
+    /**
+     * @param PerformanceReview $review
+     * @param array $rows
+     * @return array
+     */
+    private function createRatingsFromRows(PerformanceReview $review, array $rows, array $kpisForReview): array
+    {
+        $ratings = [];
+        $reviewer = $this->getPerformanceReviewDao()->getSupervisorReviewerForReview(
+            $review->getId()
+        );
+
+        foreach ($rows as $row) {
+            $itemKey = $this->getPerformanceReviewDao()->generateReviewReviewerRatingKey(
+                $reviewer->getId(),
+                $review->getId(),
+                $row['kpiId'],
+            );
+            $reviewerRating = new ReviewerRating();
+            $reviewerRating->setReviewer($reviewer);
+            $reviewerRating->getDecorator()->setKpiByKpiId($row['kpiId']);
+            $reviewerRating->setComment($row['comment']);
+            $reviewerRating->setRating($row['rating']);
+            $reviewerRating->setPerformanceReview($review);
+            $ratings[$itemKey] = $reviewerRating;
+        }
+        return $ratings;
+    }
+
+
 }
