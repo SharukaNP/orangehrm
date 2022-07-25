@@ -72,14 +72,14 @@ class I18NTranslation
      * @var bool
      * @deprecated
      *
-     * @ORM\Column(name="translated", type="boolean", options={"default":1})
+     * @ORM\Column(name="translated", type="boolean", options={"default" : 1})
      */
     private bool $translated = true;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="customized", type="boolean", options={"default":0})
+     * @ORM\Column(name="customized", type="boolean", options={"default" : 0})
      */
     private bool $customized = false;
 
